@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Réserver une table — THE PASS</title>
+<meta name="description" content="Réservation en ligne — Powered by THE PASS">
+<meta name="theme-color" content="#141414">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* THE PASS BOOKING — design uniforme pour tous les établissements (non personnalisable). */
+  :root {
+    --obsidian:#141414; --espresso:#211B17; --walnut:#30251E; --copper:#D97835; --copper-pressed:#B9622A;
+    --champagne:#E9DDCD; --ivory:#F6F0E8; --ink:#211B17; --ink-2:#76685D; --line:#D9CABB; --line-dark:#40352D;
+    --success:#64866B; --warning:#D99A48; --error:#C45C4D; --alert:#9B7BB8;
+    --serif:'Cormorant Garamond', Georgia, serif; --sans:'DM Sans', system-ui, -apple-system, sans-serif;
+    --r:14px;
+  }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; font-family:var(--sans); color:var(--ink); background:var(--ivory); font-size:16px; line-height:1.5; }
+  a { color:inherit; }
+  button, input, textarea { font:inherit; }
+  :focus-visible { outline:2px solid var(--copper); outline-offset:2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+  .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+
+  header.brand { position:absolute; top:0; left:0; right:0; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:18px 22px; color:var(--ivory); }
+  .wordmark { font-family:var(--serif); font-weight:600; letter-spacing:.22em; font-size:15px; }
+  .wordmark::after { content:''; display:block; height:2px; width:42px; background:var(--copper); margin-top:4px; }
+
+  .hero { position:relative; min-height:72vh; display:flex; align-items:flex-end; color:var(--ivory); background:var(--obsidian); overflow:hidden; }
+  .hero-media { position:absolute; inset:0; background:radial-gradient(120% 90% at 70% 10%, #3a2a1f 0%, var(--espresso) 45%, var(--obsidian) 100%); }
+  .hero-media img { width:100%; height:100%; object-fit:cover; opacity:.62; }
+  .hero::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,20,20,.2) 0%, rgba(20,20,20,.85) 100%); }
+  .hero-content { position:relative; z-index:1; width:100%; max-width:1080px; margin:0 auto; padding:120px 22px 44px; }
+  .eyebrow { text-transform:uppercase; letter-spacing:.18em; font-size:12px; color:var(--champagne); font-weight:500; }
+  h1 { font-family:var(--serif); font-weight:500; font-size:clamp(40px, 9vw, 72px); line-height:1.02; margin:10px 0 14px; letter-spacing:-.01em; }
+  .hero p.lead { max-width:560px; color:#E9DDCD; margin:0 0 26px; }
+  .logo-rest { height:46px; width:auto; border-radius:8px; margin-bottom:14px; background:var(--ivory); padding:4px; }
+
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:52px; padding:0 26px; border-radius:12px; border:1px solid var(--copper); background:var(--copper); color:var(--obsidian); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:14px; cursor:pointer; transition:background .15s, transform .15s; text-decoration:none; }
+  .btn:hover { background:var(--copper-pressed); }
+  .btn:active { transform:scale(.98); }
+  .btn[disabled] { opacity:.45; cursor:not-allowed; }
+  .btn.ghost { background:transparent; color:var(--ink); border-color:var(--line); }
+  .btn.ghost.dark { color:var(--ivory); border-color:var(--line-dark); }
+  .btn.block { width:100%; }
+
+  section { padding:56px 22px; }
+  .wrap { max-width:1080px; margin:0 auto; }
+  h2 { font-family:var(--serif); font-weight:500; font-size:clamp(30px, 6vw, 44px); margin:6px 0 18px; line-height:1.1; }
+  .dark { background:var(--obsidian); color:var(--ivory); }
+  .dark .muted { color:#B8AA9B; }
+  .champagne { background:var(--champagne); }
+  .muted { color:var(--ink-2); }
+  .grid-2 { display:grid; gap:28px; }
+  @media (min-width: 860px) { .grid-2 { grid-template-columns: 1.2fr 1fr; } }
+  .info dt { text-transform:uppercase; letter-spacing:.14em; font-size:12px; color:var(--ink-2); margin-top:16px; }
+  .info dd { margin:4px 0 0; }
+
+  /* Avis externes */
+  .reviews { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:8px; }
+  @media (min-width: 860px) { .reviews { display:grid; grid-template-columns:repeat(3, 1fr); overflow:visible; } }
+  .review { flex:0 0 78%; scroll-snap-align:start; background:var(--espresso); border:1px solid var(--line-dark); border-radius:var(--r); padding:22px; }
+  .review .platform { text-transform:uppercase; letter-spacing:.16em; font-size:12px; color:var(--champagne); }
+  .review .score { font-family:var(--serif); font-size:44px; line-height:1; margin:10px 0 4px; }
+  .review .count { color:#B8AA9B; font-size:14px; }
+  .review .date { color:#8C7F73; font-size:12px; margin-top:10px; }
+  .review a { display:inline-block; margin-top:14px; color:var(--copper); text-decoration:none; font-weight:500; }
+
+  /* Parcours de réservation */
+  .booking { max-width:640px; margin:0 auto; }
+  .steps { display:flex; gap:6px; margin:6px 0 24px; }
+  .steps span { flex:1; height:3px; border-radius:2px; background:var(--line); transition:background .2s; }
+  .steps span.on { background:var(--copper); }
+  .card { background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:22px; }
+  .label { display:block; text-transform:uppercase; letter-spacing:.14em; font-size:12px; color:var(--ink-2); margin:18px 0 8px; font-weight:500; }
+  .choices { display:flex; flex-wrap:wrap; gap:8px; }
+  .choice { min-width:52px; min-height:46px; padding:0 14px; border-radius:10px; border:1px solid var(--line); background:#fff; color:var(--ink); cursor:pointer; font-weight:500; transition:all .15s; }
+  .choice:hover { border-color:var(--copper); }
+  .choice[aria-pressed="true"], .choice[aria-checked="true"] { background:var(--copper); border-color:var(--copper); color:var(--obsidian); }
+  .choice.alert[aria-pressed="true"] { background:var(--alert); border-color:var(--alert); color:#fff; }
+  input[type=text], input[type=email], input[type=tel], input[type=date], textarea { width:100%; min-height:48px; border:1px solid var(--line); border-radius:10px; padding:10px 14px; background:#fff; color:var(--ink); }
+  textarea { min-height:96px; resize:vertical; }
+  input:focus, textarea:focus { border-color:var(--copper); outline:none; }
+  .field-error { color:var(--error); font-size:13px; margin-top:6px; min-height:0; }
+  .row { display:grid; gap:12px; }
+  @media (min-width: 560px) { .row.two { grid-template-columns:1fr 1fr; } }
+  .nav { display:flex; gap:10px; margin-top:24px; }
+  .nav .btn { flex:1; }
+  .notice { border-radius:10px; padding:12px 14px; font-size:14px; margin-top:14px; }
+  .notice.info { background:#EEF1F4; color:#33465A; }
+  .notice.error { background:#F7E3DF; color:#8A3528; }
+  .notice.alert { background:#EFE7F5; color:#4E3A63; }
+  .summary dt { color:var(--ink-2); font-size:13px; }
+  .summary dd { margin:2px 0 12px; font-weight:500; }
+  .service-title { font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-2); margin:14px 0 8px; }
+  .skeleton { height:46px; border-radius:10px; background:linear-gradient(90deg, #eee6dc, #f6f0e8, #eee6dc); background-size:200% 100%; animation:sk 1.2s infinite; }
+  @keyframes sk { from { background-position:200% 0 } to { background-position:-200% 0 } }
+  footer { background:var(--obsidian); color:#B8AA9B; text-align:center; padding:28px 22px calc(28px + env(safe-area-inset-bottom)); font-size:13px; }
+  footer .wordmark { color:var(--ivory); display:inline-block; }
+  .center-page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 22px; background:var(--obsidian); color:var(--ivory); text-align:center; }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite">
+  <div class="center-page" id="boot"><div><div class="wordmark">THE PASS</div><p class="muted" style="color:#B8AA9B">Chargement…</p></div></div>
+</div>
+
+<script src="config.js"></script>
+<script>
+/*
+ * THE PASS BOOKING — page publique de réservation.
+ * Toutes les données viennent du backend THE PASS (Supabase) via des fonctions publiques à périmètre minimal :
+ *   get_public_restaurant · get_available_slots · create_reservation · get_reservation_by_token · cancel_reservation_by_token
+ * Aucune clé secrète ici : uniquement l'URL et la clé publique (anon), la sécurité étant assurée par la base.
+ */
+(function () {
+  'use strict';
+  var CFG = window.THEPASS_CONFIG || {};
+  var app = document.getElementById('app');
+  var ALLERGENS = [['peanuts','Arachides'],['tree_nuts','Fruits à coque'],['gluten','Gluten'],['milk','Lait / lactose'],['crustaceans','Crustacés'],['molluscs','Mollusques'],['fish','Poisson'],['eggs','Œufs'],['soy','Soja'],['sesame','Sésame'],['mustard','Moutarde'],['celery','Céleri'],['lupin','Lupin'],['sulphites','Sulfites'],['other','Autre']];
+  var PREFS = [['vegetarian','Végétarien'],['vegan','Végétalien'],['no_pork','Sans porc'],['no_alcohol','Sans alcool'],['other','Autre']];
+  var PLATFORM = { google:'Google', tripadvisor:'Tripadvisor', thefork:'TheFork', other:'Avis' };
+  var STEP_COUNT = 7;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]; }); }
+  function uuid() { return (crypto.randomUUID ? crypto.randomUUID() : 'k-' + Date.now() + '-' + Math.random().toString(16).slice(2)); }
+
+  function rpc(fn, args) {
+    return fetch(CFG.supabaseUrl + '/rest/v1/rpc/' + fn, {
+      method:'POST',
+      headers:Object.assign({ 'Content-Type':'application/json', apikey:CFG.anonKey }, /^eyJ/.test(CFG.anonKey) ? { Authorization:'Bearer ' + CFG.anonKey } : {}),
+      body:JSON.stringify(args || {})
+    }).then(function (res) {
+      return res.text().then(function (t) {
+        var body = t ? JSON.parse(t) : null;
+        if (!res.ok) { var e = new Error((body && body.message) || 'Erreur ' + res.status); e.code = body && body.code; throw e; }
+        return body;
+      });
+    });
+  }
+
+  function friendlyError(e) {
+    var m = (e && e.message) || '';
+    if (/^NO_AVAILABILITY/.test(m)) return "Ce créneau vient d'être réservé. Merci de choisir un autre horaire.";
+    if (/^NO_SERVICE/.test(m)) return "Le restaurant n'accueille pas de réservation à cet horaire.";
+    if (/^INVALID:\s*(.*)/.test(m)) return m.replace(/^INVALID:\s*/, '').replace(/^./, function (c) { return c.toUpperCase(); }) + '.';
+    if (/Failed to fetch|NetworkError|network/i.test(m)) return 'Connexion interrompue. Vérifiez votre réseau puis réessayez.';
+    return 'Une erreur est survenue. Merci de réessayer ou de contacter le restaurant.';
+  }
+
+  // ------------------------------------------------------------ dates (fuseau de l'établissement)
+  function partsIn(date, tz) {
+    var f = new Intl.DateTimeFormat('en-CA', { timeZone:tz, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hourCycle:'h23' });
+    var o = {}; f.formatToParts(date).forEach(function (p) { o[p.type] = p.value; }); return o;
+  }
+  function localDay(date, tz) { var p = partsIn(date, tz); return p.year + '-' + p.month + '-' + p.day; }
+  function timeFr(iso, tz) { var p = partsIn(new Date(iso), tz); return p.hour + 'h' + p.minute; }
+  function addDays(day, n) { var d = new Date(day + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  function dayLong(day) { var s = new Intl.DateTimeFormat('fr-FR', { weekday:'long', day:'numeric', month:'long', timeZone:'UTC' }).format(new Date(day + 'T12:00:00Z')); return s.charAt(0).toUpperCase() + s.slice(1); }
+  function dayShort(day) { var d = new Date(day + 'T12:00:00Z'); return { w:new Intl.DateTimeFormat('fr-FR', { weekday:'short', timeZone:'UTC' }).format(d).replace('.', ''), n:d.getUTCDate(), m:new Intl.DateTimeFormat('fr-FR', { month:'short', timeZone:'UTC' }).format(d).replace('.', '') }; }
+  function relDate(iso) { return new Intl.DateTimeFormat('fr-FR', { day:'numeric', month:'long', year:'numeric' }).format(new Date(iso)); }
+
+  // ------------------------------------------------------------ état
+  var params = new URLSearchParams(location.search);
+  var slug = params.get('r') || location.pathname.split('/').filter(Boolean).pop() || '';
+  var manageToken = params.get('manage');
+  var R = null;
+  var S = { step:0, party:2, day:null, slot:null, slots:null, first:'', last:'', email:'', phone:'', requests:'',
+            allergy:null, allergens:[], allergyOther:'', allergyNotes:'', intolerance:null, intolerances:'', prefs:[], prefOther:'',
+            consent:false, key:uuid(), submitting:false, error:null, result:null };
+
+  // ------------------------------------------------------------ rendu : page établissement
+  function renderPage() {
+    var r = R;
+    var reviews = (r.reviews || []).filter(function (x) { return x.profile_url; });
+    var services = (r.services || []).map(function (s) {
+      var days = s.weekdays.map(function (d) { return ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'][d - 1]; }).join(' · ');
+      return '<dd><strong>' + esc(s.name) + '</strong> — ' + esc(days) + ', ' + esc(String(s.start_time).slice(0, 5).replace(':', 'h')) + '–' + esc(String(s.end_time).slice(0, 5).replace(':', 'h')) + '</dd>';
+    }).join('');
+    var addr = [r.address, [r.postal_code, r.city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+
+    app.innerHTML =
+      '<header class="brand"><div class="wordmark" aria-label="THE PASS">THE PASS</div>' +
+      '<a class="btn ghost dark" href="#reserver" style="min-height:40px;padding:0 16px;font-size:12px">Réserver</a></header>' +
+      '<main>' +
+      '<section class="hero" aria-labelledby="rname"><div class="hero-media">' + (r.cover_url ? '<img src="' + esc(r.cover_url) + '" alt="">' : '') + '</div>' +
+      '<div class="hero-content">' + (r.logo_url ? '<img class="logo-rest" src="' + esc(r.logo_url) + '" alt="Logo ' + esc(r.name) + '">' : '') +
+      (r.cuisine ? '<div class="eyebrow">' + esc(r.cuisine) + '</div>' : '') +
+      '<h1 id="rname">' + esc(r.name) + '</h1>' +
+      (r.description ? '<p class="lead">' + esc(r.description) + '</p>' : '') +
+      '<a class="btn" href="#reserver" id="cta">Book a table</a></div></section>' +
+
+      '<section class="champagne" aria-labelledby="infos"><div class="wrap grid-2"><div>' +
+      '<div class="eyebrow" style="color:var(--ink-2)">Informations pratiques</div><h2 id="infos">Nous trouver</h2>' +
+      '<dl class="info">' + (addr ? '<dt>Adresse</dt><dd>' + esc(addr) + '</dd>' : '') +
+      (r.phone ? '<dt>Téléphone</dt><dd><a href="tel:' + esc(r.phone) + '">' + esc(r.phone) + '</a></dd>' : '') +
+      (r.website ? '<dt>Site</dt><dd><a href="' + esc(r.website) + '" rel="noopener" target="_blank">' + esc(r.website.replace(/^https?:\/\//, '')) + '</a></dd>' : '') +
+      '</dl></div><div><dl class="info"><dt>Horaires</dt>' + (services || '<dd>Horaires communiqués par le restaurant.</dd>') + '</dl></div></div></section>' +
+
+      '<section id="reserver" aria-labelledby="book-title"><div class="booking"><div class="eyebrow" style="color:var(--copper)">Réservation</div>' +
+      '<h2 id="book-title">Réserver une table</h2><div class="steps" aria-hidden="true">' + Array.apply(null, Array(STEP_COUNT)).map(function (_, i) { return '<span class="' + (i <= S.step ? 'on' : '') + '"></span>'; }).join('') + '</div>' +
+      '<div id="flow"></div></div></section>' +
+
+      (reviews.length ? '<section class="dark" aria-labelledby="rev"><div class="wrap"><div class="eyebrow">Guest reviews</div><h2 id="rev">Ce que disent nos clients</h2>' +
+        '<div class="reviews">' + reviews.map(renderReview).join('') + '</div>' +
+        '<p class="muted" style="font-size:13px;margin-top:16px">Avis publiés sur des plateformes externes. Notes affichées dans leur échelle d\'origine, sans calcul de note globale.</p></div></section>' : '') +
+      '</main><footer><div>Powered by <span class="wordmark">THE PASS</span></div><div style="margin-top:6px">The art of running a restaurant.</div></footer>';
+
+    renderFlow();
+  }
+
+  function renderReview(x) {
+    var hasScore = x.rating != null && x.scale != null && x.review_count != null;
+    var name = PLATFORM[x.platform] || 'Avis';
+    return '<article class="review"><div class="platform">' + esc(name) + '</div>' +
+      (hasScore
+        ? '<div class="score">' + esc(String(x.rating).replace('.', ',')) + '<span style="font-size:20px"> / ' + esc(x.scale) + '</span></div><div class="count">' + Number(x.review_count).toLocaleString('fr-FR') + ' avis</div>' +
+          '<div class="date">Données actualisées le ' + esc(relDate(x.fetched_at)) + '</div>'
+        : '<p class="count" style="margin:12px 0 0">Consultez les avis directement sur la fiche officielle.</p>') +
+      '<a href="' + esc(x.profile_url) + '" target="_blank" rel="noopener">Voir les avis sur ' + esc(name) + ' →</a></article>';
+  }
+
+  // ------------------------------------------------------------ parcours en 8 étapes
+  function setStep(n) { S.step = n; S.error = null; renderPage(); var el = document.getElementById('book-title'); if (el) el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+  function nav(backLabel, nextLabel, nextDisabled) {
+    return '<div class="nav">' + (backLabel ? '<button class="btn ghost" data-act="back">' + backLabel + '</button>' : '') +
+      (nextLabel ? '<button class="btn" data-act="next" ' + (nextDisabled ? 'disabled' : '') + '>' + nextLabel + '</button>' : '') + '</div>';
+  }
+  function errBox() { return S.error ? '<div class="notice error" role="alert">' + esc(S.error) + '</div>' : ''; }
+
+  function renderFlow() {
+    var f = document.getElementById('flow'); if (!f) return;
+    var tz = R.timezone, html = '';
+    if (S.result) return renderConfirmation(f);
+    switch (S.step) {
+      case 0: // 1. nombre de personnes
+        html = '<div class="card"><span class="label" id="lp">Nombre de personnes</span><div class="choices" role="group" aria-labelledby="lp">' +
+          Array.apply(null, Array(Math.min(R.max_party_size, 12))).map(function (_, i) { var n = i + 1; return '<button class="choice" data-party="' + n + '" aria-pressed="' + (S.party === n) + '">' + n + '</button>'; }).join('') +
+          '</div><p class="muted" style="font-size:14px;margin-top:14px">Au-delà de ' + R.max_party_size + ' personnes, contactez directement le restaurant' + (R.phone ? ' au ' + esc(R.phone) : '') + '.</p>' + nav(null, 'Continuer') + '</div>';
+        break;
+      case 1: // 2. date
+        var today = localDay(new Date(), tz);
+        html = '<div class="card"><span class="label" id="ld">Date</span><div class="choices" role="group" aria-labelledby="ld">' +
+          Array.apply(null, Array(Math.min(R.max_days_ahead + 1, 21))).map(function (_, i) { var d = addDays(today, i), s = dayShort(d); return '<button class="choice" data-day="' + d + '" aria-pressed="' + (S.day === d) + '" aria-label="' + esc(dayLong(d)) + '"><span style="display:block;font-size:12px">' + esc(s.w) + '</span>' + s.n + ' <span style="font-size:12px">' + esc(s.m) + '</span></button>'; }).join('') +
+          '</div><label class="label" for="dpick">Autre date</label><input type="date" id="dpick" min="' + today + '" max="' + addDays(today, R.max_days_ahead) + '" value="' + (S.day || '') + '">' +
+          nav('Retour', 'Voir les horaires', !S.day) + '</div>';
+        break;
+      case 2: // 3. horaires réellement disponibles
+        html = '<div class="card"><span class="label">' + esc(dayLong(S.day)) + ' · ' + S.party + ' pers.</span><div id="slots">' +
+          (S.slots === null ? '<div class="skeleton"></div>' : renderSlots(tz)) + '</div>' + errBox() + nav('Retour', 'Continuer', !S.slot) + '</div>';
+        if (S.slots === null) loadSlots();
+        break;
+      case 3: // 4. coordonnées
+        html = '<div class="card"><div class="row two"><div><label class="label" for="first">Prénom</label><input type="text" id="first" autocomplete="given-name" value="' + esc(S.first) + '"></div>' +
+          '<div><label class="label" for="last">Nom *</label><input type="text" id="last" autocomplete="family-name" required value="' + esc(S.last) + '"><div class="field-error" id="e-last"></div></div></div>' +
+          '<label class="label" for="email">E-mail *</label><input type="email" id="email" autocomplete="email" value="' + esc(S.email) + '"><div class="field-error" id="e-email"></div>' +
+          '<label class="label" for="phone">Téléphone *</label><input type="tel" id="phone" autocomplete="tel" value="' + esc(S.phone) + '"><div class="field-error" id="e-phone"></div>' +
+          nav('Retour', 'Continuer') + '</div>';
+        break;
+      case 4: // 5. informations complémentaires
+        html = '<div class="card"><label class="label" for="req">Demandes particulières</label><textarea id="req" maxlength="500" placeholder="Anniversaire, chaise haute, accessibilité…">' + esc(S.requests) + '</textarea>' +
+          '<p class="muted" style="font-size:13px">Le restaurant fera son possible pour y répondre, sans garantie.</p>' + nav('Retour', 'Continuer') + '</div>';
+        break;
+      case 5: // 6. allergies et intolérances (séparées)
+        html = '<div class="card">' +
+          '<span class="label" id="la">Avez-vous des allergies alimentaires ?</span><div class="choices" role="radiogroup" aria-labelledby="la">' + yn('allergy') + '</div>' +
+          (S.allergy === 'yes' ? '<div class="choices" style="margin-top:12px" role="group" aria-label="Allergènes">' + ALLERGENS.map(function (a) { return '<button class="choice alert" data-allergen="' + a[0] + '" aria-pressed="' + (S.allergens.indexOf(a[0]) >= 0) + '">' + a[1] + '</button>'; }).join('') + '</div>' +
+            (S.allergens.indexOf('other') >= 0 ? '<label class="label" for="aother">Autre allergie *</label><input type="text" id="aother" value="' + esc(S.allergyOther) + '">' : '') +
+            '<label class="label" for="anotes">Précisions (personne concernée, gravité…)</label><textarea id="anotes">' + esc(S.allergyNotes) + '</textarea>' : '') +
+          '<span class="label" id="li">Avez-vous des intolérances alimentaires ?</span><div class="choices" role="radiogroup" aria-labelledby="li">' + yn('intolerance') + '</div>' +
+          (S.intolerance === 'yes' ? '<label class="label" for="intol">Précisez *</label><input type="text" id="intol" placeholder="ex. lactose" value="' + esc(S.intolerances) + '">' : '') +
+          '<span class="label" id="lpref">Préférences alimentaires (facultatif)</span><div class="choices" role="group" aria-labelledby="lpref">' + PREFS.map(function (p) { return '<button class="choice" data-pref="' + p[0] + '" aria-pressed="' + (S.prefs.indexOf(p[0]) >= 0) + '">' + p[1] + '</button>'; }).join('') + '</div>' +
+          (S.prefs.indexOf('other') >= 0 ? '<label class="label" for="pother">Autre préférence</label><input type="text" id="pother" value="' + esc(S.prefOther) + '">' : '') +
+          (S.allergy === 'yes' || S.intolerance === 'yes' ? '<div class="notice alert">Ces informations sont transmises à l\'équipe et à la cuisine. Le restaurant ne peut pas garantir l\'absence totale de traces ou de contamination croisée.</div>' : '') +
+          errBox() + nav('Retour', 'Continuer') + '</div>';
+        break;
+      case 6: // 7. récapitulatif
+        html = '<div class="card"><dl class="summary">' +
+          '<dt>Restaurant</dt><dd>' + esc(R.name) + '</dd><dt>Date</dt><dd>' + esc(dayLong(S.day)) + ' à ' + esc(timeFr(S.slot, tz)) + '</dd>' +
+          '<dt>Personnes</dt><dd>' + S.party + '</dd><dt>Nom</dt><dd>' + esc((S.first + ' ' + S.last).trim()) + '</dd>' +
+          '<dt>Contact</dt><dd>' + esc([S.email, S.phone].filter(Boolean).join(' · ')) + '</dd>' +
+          '<dt>Allergies</dt><dd>' + esc(S.allergy === 'yes' ? allergenText() : S.allergy === 'no' ? 'Aucune' : 'À préciser avec le restaurant') + '</dd>' +
+          '<dt>Intolérances</dt><dd>' + esc(S.intolerance === 'yes' ? S.intolerances : S.intolerance === 'no' ? 'Aucune' : 'À préciser avec le restaurant') + '</dd>' +
+          (S.prefs.length ? '<dt>Préférences</dt><dd>' + esc(S.prefs.map(function (p) { return p === 'other' ? S.prefOther : PREFS.filter(function (x) { return x[0] === p; })[0][1]; }).filter(Boolean).join(', ')) + '</dd>' : '') +
+          (S.requests ? '<dt>Demandes</dt><dd>' + esc(S.requests) + '</dd>' : '') + '</dl>' +
+          '<label style="display:flex;gap:10px;align-items:flex-start;font-size:14px"><input type="checkbox" id="consent" ' + (S.consent ? 'checked' : '') + ' style="margin-top:4px;width:18px;height:18px"> <span>J\'accepte que mes informations soient utilisées par le restaurant pour gérer ma réservation (y compris les informations alimentaires communiquées).</span></label>' +
+          errBox() + '<div class="nav"><button class="btn ghost" data-act="back">Modifier</button><button class="btn" data-act="submit" ' + (S.consent && !S.submitting ? '' : 'disabled') + '>' + (S.submitting ? 'Envoi…' : 'Confirmer la réservation') + '</button></div></div>';
+        break;
+    }
+    f.innerHTML = html;
+  }
+
+  function yn(field) {
+    return [['no','Non'],['yes','Oui'],['unknown','À préciser']].map(function (o) { return '<button class="choice" role="radio" data-' + field + '="' + o[0] + '" aria-checked="' + (S[field] === o[0]) + '">' + o[1] + '</button>'; }).join('');
+  }
+  function allergenText() {
+    return S.allergens.map(function (a) { return a === 'other' ? S.allergyOther : ALLERGENS.filter(function (x) { return x[0] === a; })[0][1]; }).filter(Boolean).join(', ') + (S.allergyNotes ? ' — ' + S.allergyNotes : '');
+  }
+
+  function renderSlots(tz) {
+    if (!S.slots.length) return '<div class="notice info">Aucun horaire disponible pour ' + S.party + ' personne' + (S.party > 1 ? 's' : '') + ' ce jour-là. Essayez une autre date.</div>';
+    var groups = {};
+    S.slots.forEach(function (s) { (groups[s.service_name] = groups[s.service_name] || []).push(s); });
+    return Object.keys(groups).map(function (g) {
+      return '<div class="service-title">' + esc(g) + '</div><div class="choices" role="radiogroup" aria-label="' + esc(g) + '">' + groups[g].map(function (s) {
+        return '<button class="choice" role="radio" data-slot="' + esc(s.slot) + '" aria-checked="' + (S.slot === s.slot) + '">' + esc(timeFr(s.slot, tz)) + '</button>';
+      }).join('') + '</div>';
+    }).join('');
+  }
+
+  function loadSlots() {
+    rpc('get_available_slots', { p_restaurant:R.id, p_day:S.day, p_party:S.party })
+      .then(function (data) { S.slots = data || []; if (S.step === 2) renderFlow(); })
+      .catch(function (e) { S.slots = []; S.error = friendlyError(e); if (S.step === 2) renderFlow(); });
+  }
+
+  function dietaryPayload() {
+    var out = [];
+    if (S.allergy === 'yes') S.allergens.forEach(function (a) {
+      if (a === 'other') { if (S.allergyOther.trim()) out.push({ kind:'allergy', allergen:'other', details:S.allergyOther.trim() }); }
+      else out.push({ kind:'allergy', allergen:a, details:S.allergyNotes.trim() || undefined });
+    });
+    if (S.intolerance === 'yes') S.intolerances.split(/[,;]/).map(function (x) { return x.trim(); }).filter(Boolean).forEach(function (l) { out.push({ kind:'intolerance', label:l }); });
+    S.prefs.forEach(function (p) { if (p === 'other') { if (S.prefOther.trim()) out.push({ kind:'preference', preference:'other', details:S.prefOther.trim() }); } else out.push({ kind:'preference', preference:p }); });
+    return out;
+  }
+
+  function submit() {
+    if (S.submitting) return; // anti double-clic (la clé d'idempotence protège aussi côté serveur)
+    S.submitting = true; S.error = null; renderFlow();
+    rpc('create_reservation', { p_restaurant:R.id, p_payload:{
+      starts_at:S.slot, party_size:S.party, first_name:S.first.trim(), last_name:S.last.trim(), email:S.email.trim(), phone:S.phone.trim(),
+      special_requests:S.requests.trim(), allergy_declaration:S.allergy || 'unknown', intolerance_declaration:S.intolerance || 'unknown',
+      dietary:dietaryPayload(), idempotency_key:S.key } })
+      .then(function (res) { S.result = res; S.submitting = false; renderPage(); })
+      .catch(function (e) {
+        S.submitting = false; S.error = friendlyError(e);
+        if (/^NO_AVAILABILITY/.test(e.message)) { S.slot = null; S.slots = null; S.key = uuid(); S.step = 2; }
+        renderPage();
+      });
+  }
+
+  function renderConfirmation(f) {
+    var link = location.origin + location.pathname + '?manage=' + encodeURIComponent(S.result.manage_token);
+    f.innerHTML = '<div class="card" style="text-align:center"><div class="eyebrow" style="color:var(--success)">Réservation confirmée</div>' +
+      '<h2 style="margin-top:8px">À très bientôt</h2><p>' + esc(R.name) + '<br><strong>' + esc(dayLong(S.day)) + ' à ' + esc(timeFr(S.slot, R.timezone)) + '</strong><br>' + S.party + ' personne' + (S.party > 1 ? 's' : '') + '</p>' +
+      (R.address ? '<p class="muted">' + esc([R.address, R.city].filter(Boolean).join(', ')) + '</p>' : '') +
+      '<p style="font-size:14px">Conservez ce lien pour gérer ou annuler votre réservation :<br><a href="' + esc(link) + '" id="manage-link">Gérer ma réservation</a></p>' +
+      '<p class="muted" style="font-size:13px">L\'e-mail de confirmation automatique n\'est pas encore activé : pensez à enregistrer ce lien.</p></div>';
+  }
+
+  // ------------------------------------------------------------ événements
+  app.addEventListener('click', function (e) {
+    var b = e.target.closest('button, a[data-act]'); if (!b) return;
+    var d = b.dataset;
+    if (d.party) { S.party = +d.party; S.slots = null; S.slot = null; renderFlow(); return; }
+    if (d.day) { S.day = d.day; S.slots = null; S.slot = null; renderFlow(); return; }
+    if (d.slot) { S.slot = d.slot; renderFlow(); return; }
+    if (d.allergy) { S.allergy = d.allergy; renderFlow(); return; }
+    if (d.intolerance) { S.intolerance = d.intolerance; renderFlow(); return; }
+    if (d.allergen) { var i = S.allergens.indexOf(d.allergen); if (i >= 0) S.allergens.splice(i, 1); else S.allergens.push(d.allergen); captureInputs(); renderFlow(); return; }
+    if (d.pref) { var j = S.prefs.indexOf(d.pref); if (j >= 0) S.prefs.splice(j, 1); else S.prefs.push(d.pref); captureInputs(); renderFlow(); return; }
+    if (d.act === 'back') { captureInputs(); setStep(Math.max(0, S.step - 1)); return; }
+    if (d.act === 'next') { captureInputs(); if (validate()) setStep(S.step + 1); return; }
+    if (d.act === 'submit') { submit(); return; }
+    if (d.act === 'cancel-res') { cancelByToken(); return; }
+  });
+  app.addEventListener('input', function () {
+    if (S.error) { S.error = null; var n = document.querySelector('.notice.error'); if (n) n.remove(); }
+  });
+  app.addEventListener('change', function (e) {
+    if (e.target.id === 'dpick' && e.target.value) { S.day = e.target.value; S.slots = null; S.slot = null; renderFlow(); }
+    if (e.target.id === 'consent') { S.consent = e.target.checked; renderFlow(); }
+  });
+
+  function val(id) { var el = document.getElementById(id); return el ? el.value : null; }
+  function captureInputs() {
+    ['first','last','email','phone'].forEach(function (k) { var v = val(k); if (v !== null) S[k] = v; });
+    var map = { req:'requests', aother:'allergyOther', anotes:'allergyNotes', intol:'intolerances', pother:'prefOther' };
+    Object.keys(map).forEach(function (k) { var v = val(k); if (v !== null) S[map[k]] = v; });
+  }
+  function setErr(id, msg) { var el = document.getElementById(id); if (el) el.textContent = msg || ''; }
+  function validate() {
+    if (S.step === 3) {
+      var ok = true;
+      setErr('e-last', S.last.trim() ? '' : 'Merci d\'indiquer votre nom.'); ok = ok && !!S.last.trim();
+      var em = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(S.email.trim()); setErr('e-email', em ? '' : 'Adresse e-mail invalide.'); ok = ok && em;
+      var ph = /^\+?[0-9]{8,15}$/.test(S.phone.replace(/[\s.\-()]/g, '')); setErr('e-phone', ph ? '' : 'Numéro de téléphone invalide.'); ok = ok && ph;
+      if (!ok) { var first = document.querySelector('.field-error:not(:empty)'); if (first) first.previousElementSibling.focus(); }
+      return ok;
+    }
+    if (S.step === 5) {
+      var msg = null;
+      if (!S.allergy) msg = 'Merci de répondre à la question sur les allergies.';
+      else if (!S.intolerance) msg = 'Merci de répondre à la question sur les intolérances.';
+      else if (S.allergy === 'yes' && !S.allergens.length) msg = 'Merci de sélectionner au moins un allergène.';
+      else if (S.allergy === 'yes' && S.allergens.indexOf('other') >= 0 && !S.allergyOther.trim()) msg = 'Merci de préciser l\'allergie « Autre ».';
+      else if (S.intolerance === 'yes' && !S.intolerances.trim()) msg = 'Merci de préciser l\'intolérance.';
+      if (msg) { S.error = msg; renderFlow(); return false; }
+    }
+    return true;
+  }
+
+  // ------------------------------------------------------------ gestion par lien (annulation)
+  function renderManage(data) {
+    app.innerHTML = '<div class="center-page"><div style="max-width:460px"><div class="wordmark" style="display:inline-block">THE PASS</div>' +
+      (data ? '<h2>' + esc(data.restaurant_name) + '</h2><p>' + esc(new Intl.DateTimeFormat('fr-FR', { dateStyle:'full', timeStyle:'short' }).format(new Date(data.starts_at))) + '<br>' + data.party_size + ' personne(s)</p>' +
+        '<p class="muted">Statut : ' + esc({ confirmed:'confirmée', pending:'en attente', cancelled:'annulée', seated:'en cours', completed:'terminée', no_show:'non présentée', waitlist:"liste d'attente" }[data.status] || data.status) + '</p>' +
+        (data.can_cancel ? '<button class="btn" data-act="cancel-res">Annuler ma réservation</button>' : (data.status === 'cancelled' ? '' : '<p class="muted">L\'annulation en ligne n\'est plus possible : contactez le restaurant.</p>'))
+        : '<h2>Réservation introuvable</h2><p class="muted">Ce lien n\'est pas valide.</p>') + '</div></div>';
+  }
+  function cancelByToken() {
+    if (!confirm('Confirmer l\'annulation de votre réservation ?')) return;
+    rpc('cancel_reservation_by_token', { p_token:manageToken }).then(function (ok) {
+      if (!ok) alert('L\'annulation n\'a pas pu être effectuée. Contactez le restaurant.');
+      return rpc('get_reservation_by_token', { p_token:manageToken }).then(renderManage);
+    }).catch(function (e) { alert(friendlyError(e)); });
+  }
+
+  // ------------------------------------------------------------ démarrage
+  function fail(title, msg) { app.innerHTML = '<div class="center-page"><div><div class="wordmark" style="display:inline-block">THE PASS</div><h2>' + esc(title) + '</h2><p class="muted" style="color:#B8AA9B">' + esc(msg) + '</p></div></div>'; }
+  if (!CFG.supabaseUrl || !CFG.anonKey) return fail('Configuration manquante', 'Renseignez config.js (URL et clé publique Supabase).');
+  if (manageToken) { rpc('get_reservation_by_token', { p_token:manageToken }).then(renderManage).catch(function (e) { fail('Indisponible', friendlyError(e)); }); return; }
+  if (!slug) return fail('Restaurant introuvable', 'Adresse de page incomplète.');
+  rpc('get_public_restaurant', { p_slug:slug }).then(function (r) {
+    if (!r) return fail('Page indisponible', 'Ce restaurant ne propose pas de réservation en ligne pour le moment.');
+    R = r; document.title = 'Réserver — ' + r.name + ' · THE PASS'; renderPage();
+  }).catch(function (e) { fail('Page indisponible', friendlyError(e)); });
+})();
+</script>
+</body>
+</html>
