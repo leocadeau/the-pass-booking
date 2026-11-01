@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menu — THE PASS</title>
+<meta name="description" content="Menu du restaurant — Powered by THE PASS">
+<meta name="theme-color" content="#141414">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* THE PASS — menu digital public : même identité que THE PASS BOOKING, lecture rapide sur téléphone. */
+  :root {
+    --obsidian:#141414; --espresso:#211B17; --walnut:#30251E; --copper:#D97835; --copper-pressed:#B9622A;
+    --champagne:#E9DDCD; --ivory:#F6F0E8; --ink:#211B17; --ink-2:#76685D; --line:#D9CABB; --line-dark:#40352D;
+    --warning:#D99A48; --error:#C45C4D; --alert:#9B7BB8;
+    --serif:'Cormorant Garamond', Georgia, serif; --sans:'DM Sans', system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; font-family:var(--sans); color:var(--ink); background:var(--ivory); font-size:16px; line-height:1.5; }
+  :focus-visible { outline:2px solid var(--copper); outline-offset:2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+  header { background:var(--obsidian); color:var(--ivory); padding:22px 20px 26px; }
+  .top { display:flex; justify-content:space-between; align-items:center; gap:12px; max-width:760px; margin:0 auto 22px; }
+  .wordmark { font-family:var(--serif); font-weight:600; letter-spacing:.22em; font-size:14px; }
+  .wordmark::after { content:''; display:block; height:2px; width:38px; background:var(--copper); margin-top:4px; }
+  .langs { display:flex; gap:6px; flex-wrap:wrap; }
+  .langs a { color:var(--champagne); text-decoration:none; font-size:13px; padding:6px 10px; border:1px solid var(--line-dark); border-radius:999px; min-height:32px; display:inline-flex; align-items:center; }
+  .langs a[aria-current="true"] { border-color:var(--copper); color:var(--ivory); }
+  .head { max-width:760px; margin:0 auto; }
+  .eyebrow { text-transform:uppercase; letter-spacing:.18em; font-size:12px; color:var(--champagne); }
+  h1 { font-family:var(--serif); font-weight:500; font-size:clamp(36px, 9vw, 56px); line-height:1.05; margin:8px 0 6px; }
+  .where { color:#B8AA9B; font-size:14px; margin:0; }
+  nav.cats { position:sticky; top:0; z-index:2; background:var(--ivory); border-bottom:1px solid var(--line); overflow-x:auto; white-space:nowrap; padding:10px 16px; }
+  nav.cats a { display:inline-block; margin-right:8px; padding:8px 12px; border-radius:999px; color:var(--ink); text-decoration:none; font-size:14px; border:1px solid var(--line); }
+  main { max-width:760px; margin:0 auto; padding:8px 20px 40px; }
+  h2 { font-family:var(--serif); font-weight:500; font-size:30px; margin:34px 0 8px; scroll-margin-top:64px; }
+  .item { display:grid; grid-template-columns:1fr auto; gap:4px 16px; padding:16px 0; border-bottom:1px solid var(--line); }
+  .item.has-photo { grid-template-columns:84px 1fr auto; }
+  .item img { width:84px; height:63px; object-fit:cover; border-radius:10px; grid-row:span 2; background:var(--champagne); }
+  .name { font-weight:600; }
+  .price { font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .desc { color:var(--ink-2); font-size:14px; grid-column:1 / -2; }
+  .item.has-photo .desc { grid-column:2 / 3; }
+  .tags { display:flex; flex-wrap:wrap; gap:6px; grid-column:1 / -1; margin-top:4px; }
+  .item.has-photo .tags { grid-column:2 / -1; }
+  .tag { font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--ink-2); }
+  .tag.allergen { border-color:rgba(155,123,184,.5); color:#6E5390; }
+  .tag.off { border-color:rgba(217,154,72,.6); color:#8A5B1E; }
+  .item.unavailable .name, .item.unavailable .price { color:var(--ink-2); text-decoration:line-through; }
+  .note, .legal { color:var(--ink-2); font-size:14px; }
+  .legal { border-top:1px solid var(--line); margin-top:30px; padding-top:16px; }
+  .demo { background:var(--warning); color:var(--obsidian); text-align:center; font-size:13px; padding:6px 12px; font-weight:500; }
+  .cta { position:sticky; bottom:0; background:linear-gradient(180deg, rgba(246,240,232,0) 0%, var(--ivory) 30%); padding:18px 20px calc(18px + env(safe-area-inset-bottom)); text-align:center; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; min-height:52px; padding:0 26px; border-radius:12px; background:var(--copper); color:var(--obsidian); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:14px; text-decoration:none; width:100%; max-width:420px; }
+  .btn:hover { background:var(--copper-pressed); }
+  .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+  .state { max-width:560px; margin:80px auto; padding:0 22px; text-align:center; }
+  .skeleton { height:18px; background:linear-gradient(90deg, #ebe2d6, #f3ece2, #ebe2d6); border-radius:6px; margin:14px 0; }
+  footer { text-align:center; font-size:12px; color:var(--ink-2); padding:20px 0 30px; }
+</style>
+<script src="config.js"></script>
+</head>
+<body>
+<div id="app" aria-live="polite">
+  <div class="state" aria-busy="true"><div class="skeleton"></div><div class="skeleton" style="width:70%"></div><div class="skeleton" style="width:85%"></div><span class="sr-only">Chargement du menu</span></div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var CFG = window.THEPASS_CONFIG || {};
+  var params = new URLSearchParams(location.search);
+  var slug = (params.get('r') || '').trim();
+  var reqLang = (params.get('lang') || (navigator.language || 'fr').slice(0, 2)).toLowerCase();
+  var app = document.getElementById('app');
+
+  var T = {
+    fr: { menu:'Notre menu', book:'Réserver une table', off:'Indisponible aujourd’hui', allergens:'Allergènes', prices:'Prix en euros, toutes taxes comprises.', allergyInfo:'Allergies ou intolérances : signalez-les à notre équipe avant de commander. Les informations ci-dessus sont déclarées par le restaurant.', notFound:'Menu introuvable', notFoundMsg:'Ce menu n’existe pas ou n’est pas encore publié.', error:'Le menu est momentanément indisponible. Réessayez dans un instant.', demo:'Établissement de démonstration', empty:'La carte est en cours de mise à jour.' },
+    en: { menu:'Our menu', book:'Book a table', off:'Unavailable today', allergens:'Allergens', prices:'Prices in euros, all taxes included.', allergyInfo:'Allergies or intolerances: please tell our team before ordering. The information above is declared by the restaurant.', notFound:'Menu not found', notFoundMsg:'This menu does not exist or is not published yet.', error:'The menu is temporarily unavailable. Please try again shortly.', demo:'Demo restaurant', empty:'The menu is being updated.' },
+    es: { menu:'Nuestra carta', book:'Reservar mesa', off:'No disponible hoy', allergens:'Alérgenos', prices:'Precios en euros, impuestos incluidos.', allergyInfo:'Alergias o intolerancias: avise a nuestro equipo antes de pedir. La información anterior la declara el restaurante.', notFound:'Carta no encontrada', notFoundMsg:'Esta carta no existe o aún no está publicada.', error:'La carta no está disponible en este momento.', demo:'Restaurante de demostración', empty:'La carta se está actualizando.' },
+    it: { menu:'Il nostro menu', book:'Prenota un tavolo', off:'Non disponibile oggi', allergens:'Allergeni', prices:'Prezzi in euro, tasse incluse.', allergyInfo:'Allergie o intolleranze: segnalatele al nostro staff prima di ordinare. Le informazioni sono dichiarate dal ristorante.', notFound:'Menu non trovato', notFoundMsg:'Questo menu non esiste o non è ancora pubblicato.', error:'Il menu è momentaneamente non disponibile.', demo:'Ristorante dimostrativo', empty:'Il menu è in aggiornamento.' },
+    de: { menu:'Unsere Speisekarte', book:'Tisch reservieren', off:'Heute nicht verfügbar', allergens:'Allergene', prices:'Preise in Euro inklusive aller Steuern.', allergyInfo:'Allergien oder Unverträglichkeiten: Bitte informieren Sie unser Team vor der Bestellung. Die Angaben stammen vom Restaurant.', notFound:'Speisekarte nicht gefunden', notFoundMsg:'Diese Speisekarte existiert nicht oder ist noch nicht veröffentlicht.', error:'Die Speisekarte ist vorübergehend nicht verfügbar.', demo:'Demo-Restaurant', empty:'Die Speisekarte wird aktualisiert.' }
+  };
+  var A = {
+    fr: { gluten:'Gluten', crustaceans:'Crustacés', eggs:'Œufs', fish:'Poisson', peanuts:'Arachides', soy:'Soja', milk:'Lait', tree_nuts:'Fruits à coque', celery:'Céleri', mustard:'Moutarde', sesame:'Sésame', sulphites:'Sulfites', lupin:'Lupin', molluscs:'Mollusques' },
+    en: { gluten:'Gluten', crustaceans:'Crustaceans', eggs:'Eggs', fish:'Fish', peanuts:'Peanuts', soy:'Soy', milk:'Milk', tree_nuts:'Tree nuts', celery:'Celery', mustard:'Mustard', sesame:'Sesame', sulphites:'Sulphites', lupin:'Lupin', molluscs:'Molluscs' },
+    es: { gluten:'Gluten', crustaceans:'Crustáceos', eggs:'Huevos', fish:'Pescado', peanuts:'Cacahuetes', soy:'Soja', milk:'Leche', tree_nuts:'Frutos de cáscara', celery:'Apio', mustard:'Mostaza', sesame:'Sésamo', sulphites:'Sulfitos', lupin:'Altramuces', molluscs:'Moluscos' },
+    it: { gluten:'Glutine', crustaceans:'Crostacei', eggs:'Uova', fish:'Pesce', peanuts:'Arachidi', soy:'Soia', milk:'Latte', tree_nuts:'Frutta a guscio', celery:'Sedano', mustard:'Senape', sesame:'Sesamo', sulphites:'Solfiti', lupin:'Lupini', molluscs:'Molluschi' },
+    de: { gluten:'Gluten', crustaceans:'Krebstiere', eggs:'Eier', fish:'Fisch', peanuts:'Erdnüsse', soy:'Soja', milk:'Milch', tree_nuts:'Schalenfrüchte', celery:'Sellerie', mustard:'Senf', sesame:'Sesam', sulphites:'Sulfite', lupin:'Lupinen', molluscs:'Weichtiere' }
+  };
+  var NAMES = { fr:'FR', en:'EN', es:'ES', it:'IT', de:'DE' };
+
+  function el(tag, attrs, children) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k]; else if (attrs[k] !== null && attrs[k] !== undefined) n.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+  function stateView(title, msg) {
+    app.innerHTML = '';
+    app.appendChild(el('div', { class:'state' }, [el('h1', { text:title, style:'color:var(--ink);font-size:36px' }), el('p', { class:'muted', text:msg })]));
+  }
+  function rpc(fn, args) {
+    return fetch(CFG.supabaseUrl + '/rest/v1/rpc/' + fn, {
+      method:'POST',
+      headers:Object.assign({ 'Content-Type':'application/json', apikey:CFG.anonKey }, /^eyJ/.test(CFG.anonKey || '') ? { Authorization:'Bearer ' + CFG.anonKey } : {}),
+      body:JSON.stringify(args || {})
+    }).then(function (res) { return res.text().then(function (t) { if (!res.ok) throw new Error('HTTP ' + res.status); return t ? JSON.parse(t) : null; }); });
+  }
+  function slugify(s, i) { return 'c' + i + '-' + s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+
+  var t0 = T[reqLang] || T.fr;
+  if (!slug || !CFG.supabaseUrl) { stateView(t0.notFound, t0.notFoundMsg); return; }
+
+  rpc('get_public_menu', { p_slug:slug, p_lang:reqLang }).then(function (m) {
+    if (!m) { stateView(t0.notFound, t0.notFoundMsg); return; }
+    var lang = T[m.language] ? m.language : 'fr';
+    var t = T[lang], al = A[lang];
+    var money = new Intl.NumberFormat(lang + '-' + (lang === 'en' ? 'GB' : lang.toUpperCase()), { style:'currency', currency:'EUR' });
+    var r = m.restaurant;
+    document.documentElement.lang = lang;
+    document.title = t.menu + ' — ' + r.name;
+    var meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute('content', t.menu + ' — ' + r.name + (r.city ? ', ' + r.city : ''));
+
+    app.innerHTML = '';
+    if (r.is_demo) app.appendChild(el('div', { class:'demo', role:'note', text:t.demo }));
+
+    var langs = el('div', { class:'langs', role:'navigation', 'aria-label':'Langue' });
+    (m.languages || ['fr']).forEach(function (l) {
+      var u = new URL(location.href); u.searchParams.set('lang', l);
+      langs.appendChild(el('a', { href:u.pathname + u.search, hreflang:l, lang:l, 'aria-current': l === lang ? 'true' : null, text:NAMES[l] || l.toUpperCase() }));
+    });
+    var where = [r.address, [r.postal_code, r.city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    app.appendChild(el('header', null, [
+      el('div', { class:'top' }, [el('div', { class:'wordmark', text:'THE PASS' }), langs]),
+      el('div', { class:'head' }, [el('div', { class:'eyebrow', text:t.menu }), el('h1', { text:r.name }), where ? el('p', { class:'where', text:where }) : null])
+    ]));
+
+    var cats = m.categories || [];
+    if (cats.length > 1) {
+      var nav = el('nav', { class:'cats', 'aria-label':t.menu });
+      cats.forEach(function (c, i) { nav.appendChild(el('a', { href:'#' + slugify(c.name, i), text:c.name })); });
+      app.appendChild(nav);
+    }
+    var main = el('main');
+    if (!cats.length) main.appendChild(el('p', { class:'note', text:t.empty }));
+    cats.forEach(function (c, i) {
+      main.appendChild(el('h2', { id:slugify(c.name, i), text:c.name }));
+      c.items.forEach(function (it) {
+        var tags = el('div', { class:'tags' });
+        if (!it.available) tags.appendChild(el('span', { class:'tag off', text:t.off }));
+        (it.allergens || []).forEach(function (a) { tags.appendChild(el('span', { class:'tag allergen', text:al[a] || a })); });
+        var row = el('article', { class:'item' + (it.photo_path ? ' has-photo' : '') + (it.available ? '' : ' unavailable'), 'aria-label':it.name }, [
+          it.photo_path ? el('img', { src:CFG.supabaseUrl + '/storage/v1/object/public/menu-photos/' + it.photo_path.split('/').map(encodeURIComponent).join('/'), alt:it.name, loading:'lazy', width:'84', height:'63' }) : null,
+          el('div', { class:'name', text:it.name }),
+          el('div', { class:'price', text:money.format(it.price_cents / 100) }),
+          it.description ? el('div', { class:'desc', text:it.description }) : null,
+          tags.childNodes.length ? tags : null
+        ]);
+        main.appendChild(row);
+      });
+    });
+    if (r.menu_note) main.appendChild(el('p', { class:'note', text:r.menu_note }));
+    main.appendChild(el('div', { class:'legal' }, [el('p', { text:t.prices }), el('p', { text:t.allergyInfo })]));
+    main.appendChild(el('footer', { text:'Powered by THE PASS' }));
+    app.appendChild(main);
+    if (r.booking_enabled) app.appendChild(el('div', { class:'cta' }, [el('a', { class:'btn', href:'./?r=' + encodeURIComponent(r.slug), text:t.book })]));
+  }).catch(function () { stateView('Menu', t0.error); });
+})();
+</script>
+</body>
+</html>
